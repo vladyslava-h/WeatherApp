@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"  
+             mc:Ignorable="d"
+             x:Class="WeatherApp.MainPage"
+             xmlns:vm ="clr-namespace:WeatherApp.ViewModels">
+    <ContentPage.BindingContext>
+        <vm:MainViewModel/>
+    </ContentPage.BindingContext>
+
+    <Grid VerticalOptions="FillAndExpand">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="25*"/>
+        </Grid.RowDefinitions>
+
+        <ff:CachedImage Aspect="AspectFill"  Grid.RowSpan="3" Source="{Binding Path=CurrentWeather.ImageSource}" Margin="0"/>
+        <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.6"/>
+
+        <StackLayout Grid.Row="0" Margin="0, 45, 25, 0">
+            <Label HorizontalTextAlignment="End" Text="Last update: Fri Nov 17, 11:23 am" TextColor="White" FontSize="Micro"/>
+            <Label HorizontalTextAlignment="End" Text="{Binding Path=CurrentWeather.Name}" TextColor="White" FontSize="Subtitle" FontAttributes="Bold"/>
+        </StackLayout>
+        
+        <StackLayout Grid.Row="1">
+
+            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" Margin="0">
+                <Label Text="{Binding Path=CurrentWeather.Main.TempInt}" 
+                   Margin="25,0,0,0"
+                   TextColor="White" 
+                   FontSize="Header"/>
+                <Label Text="°C" Margin="5,70,0,0" TextColor="White" FontSize="Large"/>
+            </StackLayout>
+            <BoxView 
+                HeightRequest="4"
+                Margin="25, -7, 25, 0"
+                BackgroundColor="White" 
+                HorizontalOptions="FillAndExpand" />
+            <Label Text="{Binding Path=CurrentWeather.Description}" Margin="25,5,0,0" TextColor="White" FontSize="Large"/>
+
+        </StackLayout>
+
+    </Grid>
+
+</ContentPage>

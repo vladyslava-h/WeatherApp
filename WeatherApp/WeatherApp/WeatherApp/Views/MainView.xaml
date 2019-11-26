@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ffimage="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"  
+             xmlns:infrastructure="clr-namespace:WeatherApp.Infrastructure"
              mc:Ignorable="d"
              x:Class="WeatherApp.MainPage"
              xmlns:vm ="clr-namespace:WeatherApp.ViewModels">
@@ -23,10 +24,10 @@
         <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.6"/>
 
         <StackLayout Grid.Row="0" Margin="0, 45, 25, 0">
-            <Label HorizontalTextAlignment="End" Text="Last update: Fri Nov 17, 11:23 am" TextColor="White" FontSize="Micro"/>
+            <Label HorizontalTextAlignment="End" Text="Last update: Fri Nov 17, 11:26 am" TextColor="White" FontSize="Micro"/>
             <Label HorizontalTextAlignment="End" Text="{Binding Path=CurrentWeather.Name}" TextColor="White" FontSize="Subtitle" FontAttributes="Bold"/>
         </StackLayout>
-        
+
         <StackLayout Grid.Row="1">
 
             <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" Margin="0">
@@ -43,6 +44,52 @@
                 HorizontalOptions="FillAndExpand" />
             <Label Text="{Binding Path=CurrentWeather.Description}" Margin="25,5,0,0" TextColor="White" FontSize="Large"/>
 
+        </StackLayout>
+
+
+        <StackLayout VerticalOptions="Center" Margin="0,0,0,-5" Grid.Row="2">
+           <RelativeLayout HeightRequest="110">
+                <ListView
+                      Rotation ="270"
+                      RowHeight ="100"
+                      SeparatorColor="Transparent"
+                      SeparatorVisibility="None"
+                      VerticalOptions                 ="FillAndExpand"
+                      CachingStrategy                 ="RecycleElement"
+                      HorizontalOptions               ="FillAndExpand"
+                      RelativeLayout.XConstraint      ="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.5,Constant=-45}"
+                      RelativeLayout.YConstraint      ="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=-0.5,Constant=45}"
+                      RelativeLayout.WidthConstraint  ="{ConstraintExpression Type=Constant,Constant=90}"
+                      RelativeLayout.HeightConstraint ="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"
+                      ItemsSource="{Binding Forecast}"
+                      VerticalScrollBarVisibility="Never"
+                      SelectionMode="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ContentView Rotation ="90"
+                                         BackgroundColor ="Transparent"
+                                         Padding ="5">
+                                    <StackLayout>
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Start">
+                                            <Label Text="{Binding Path=Main.TempInt}" TextColor="White" FontAttributes="Bold"/>
+                                            <Label Text="°C" TextColor="White" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                        <Image Source="{Binding Path=IconPng}"
+                                               Margin="0, 6, 0, 6"
+                                               WidthRequest="20" HeightRequest="20" 
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Path=Time}" TextColor="White" HorizontalOptions="Center" VerticalOptions="End"/>
+                                    </StackLayout>
+                                </ContentView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.Effects>
+                        <infrastructure:NoScroll/>
+                    </ListView.Effects>
+                </ListView>
+            </RelativeLayout>
         </StackLayout>
 
     </Grid>

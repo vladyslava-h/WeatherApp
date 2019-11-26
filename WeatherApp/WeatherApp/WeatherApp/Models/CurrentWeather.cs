@@ -26,5 +26,27 @@ namespace WeatherApp.Models
             }
         }
 
+        public string IconPng
+        {
+            get
+            {
+                string icon_name = Weather[0].Icon;
+
+                if (!(icon_name.Contains("d") || icon_name == "01n" || icon_name == "02n"))
+                    icon_name = icon_name.Replace('n', 'd');
+                return $"icon{icon_name}.png";
+            }
+
+        }
+
+        public string Dt_txt { set; get; }
+        public string Time
+        {
+            get
+            {
+                string[] date = Dt_txt.Split(new char[] { ' ', '-', ':', '.' });
+                return $"{date[3]}:{date[4]}";
+            }
+        }
     }
 }

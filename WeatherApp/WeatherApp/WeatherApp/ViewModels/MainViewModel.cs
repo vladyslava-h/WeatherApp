@@ -22,11 +22,27 @@ namespace WeatherApp.ViewModels
             get => currentWeather;
         }
 
+        List<CurrentWeather> forecast;
+        public List<CurrentWeather> Forecast
+        {
+            set
+            {
+                forecast = value;
+                Notify();
+            }
+            get => forecast;
+        }
         public MainViewModel()
         {
             networkManager = new NetworkManager();
             //CurrentWeather = new CurrentWeather();
-            Task.Run(() => CurrentWeather = networkManager.GetCurrentWeather("Kyiv"));
+
+            Task.Run(() =>
+            {
+                CurrentWeather = networkManager.GetCurrentWeather("Kyiv");
+                Forecast = networkManager.GetForecast("Kiev").List;
+            });
         }
+
     }
 }

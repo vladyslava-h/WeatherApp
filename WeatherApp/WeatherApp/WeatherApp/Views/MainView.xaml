@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ffimage="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"  
+             xmlns:controls="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
              xmlns:infrastructure="clr-namespace:WeatherApp.Infrastructure"
              mc:Ignorable="d"
              x:Class="WeatherApp.MainPage"
@@ -23,32 +24,53 @@
         <ff:CachedImage Aspect="AspectFill"  Grid.RowSpan="3" Source="{Binding Path=CurrentWeather.ImageSource}" Margin="0"/>
         <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.6"/>
 
-        <StackLayout Grid.Row="0" Margin="0, 45, 25, 0">
-            <Label HorizontalTextAlignment="End" Text="Last update: Fri Nov 17, 11:26 am" TextColor="White" FontSize="Micro"/>
-            <Label HorizontalTextAlignment="End" Text="{Binding Path=CurrentWeather.Name}" TextColor="White" FontSize="Subtitle" FontAttributes="Bold"/>
-        </StackLayout>
+        <ContentView Grid.RowSpan="3" Margin="0,0,0,10">
+            <controls:CarouselViewControl
+                Position="{Binding SelectedPosition}"
+                ItemsSource="{Binding ViewModels}"
+                ShowIndicators="True">
+                <controls:CarouselViewControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25*"/>
+                                <RowDefinition Height="50*"/>
+                                <RowDefinition Height="25*"/>
+                            </Grid.RowDefinitions>
+                            <ContentView Grid.Row="0"  Margin="0, 45, 25, 0" IsVisible="{Binding Path=IsDayPage}">
+                                <StackLayout>
+                                    <Label HorizontalTextAlignment="End" Text="Last update: Fri Nov 17, 11:26 am" TextColor="White" FontSize="Micro"/>
+                                    <Label HorizontalTextAlignment="End" Text="{Binding Path=CurrentWeather.Name}" TextColor="White" FontSize="Subtitle" FontAttributes="Bold"/>
+                                </StackLayout>
+                            </ContentView>
 
-        <StackLayout Grid.Row="1">
+                            <ContentView Grid.Row="1" IsVisible="{Binding Path=IsDayPage}">
+                                <StackLayout>
+                                    <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" Margin="0">
+                                        <Label Text="{Binding Path=CurrentWeather.Main.TempInt}" 
+                                           Margin="25,0,0,0"
+                                           TextColor="White" 
+                                           FontSize="Header"/>
+                                        <Label Text="°C" Margin="5,70,0,0" TextColor="White" FontSize="Large"/>
+                                    </StackLayout>
+                                    <BoxView 
+                                            HeightRequest="4"
+                                            Margin="25, -7, 25, 0"
+                                            BackgroundColor="White" 
+                                            HorizontalOptions="FillAndExpand" />
+                                    <Label Text="{Binding Path=CurrentWeather.Description}" Margin="25,5,0,0" TextColor="White" FontSize="Large"/>
+                                </StackLayout>
+                            </ContentView>
+                        </Grid>
+                    </DataTemplate>
+                </controls:CarouselViewControl.ItemTemplate>
+            </controls:CarouselViewControl>
+        </ContentView>
 
-            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" Margin="0">
-                <Label Text="{Binding Path=CurrentWeather.Main.TempInt}" 
-                   Margin="25,0,0,0"
-                   TextColor="White" 
-                   FontSize="Header"/>
-                <Label Text="°C" Margin="5,70,0,0" TextColor="White" FontSize="Large"/>
-            </StackLayout>
-            <BoxView 
-                HeightRequest="4"
-                Margin="25, -7, 25, 0"
-                BackgroundColor="White" 
-                HorizontalOptions="FillAndExpand" />
-            <Label Text="{Binding Path=CurrentWeather.Description}" Margin="25,5,0,0" TextColor="White" FontSize="Large"/>
 
-        </StackLayout>
-
-
-        <StackLayout VerticalOptions="Center" Margin="0,0,0,-5" Grid.Row="2">
-           <RelativeLayout HeightRequest="110">
+        <!--F O R E C A S T-->
+        <StackLayout VerticalOptions="Center" Margin="0,-25,0,-5" Grid.Row="2" IsVisible="{Binding Path=ShowForecast}">
+            <RelativeLayout HeightRequest="110">
                 <ListView
                       Rotation ="270"
                       RowHeight ="100"

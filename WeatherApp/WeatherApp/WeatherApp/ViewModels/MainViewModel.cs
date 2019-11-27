@@ -7,7 +7,7 @@ using WeatherApp.Models;
 
 namespace WeatherApp.ViewModels
 {
-    class MainViewModel : Notifier
+    class MainViewModel : Notifier, IViewModel
     {
         private NetworkManager networkManager;
 
@@ -32,10 +32,45 @@ namespace WeatherApp.ViewModels
             }
             get => forecast;
         }
+
+        public List<IViewModel> ViewModels { set; get; }
+        public bool IsDayPage => true;
+        public bool IsWeekPage => false;
+
+        private bool showForecast;
+        public bool ShowForecast
+        {
+            set
+            {
+                showForecast = value;
+                Notify();
+            }
+            get => showForecast;
+        } 
+
+        private IViewModel selectedPosition;
+        public IViewModel SelectedPosition
+        { 
+            set
+            {
+                if (value != this)
+                    ShowForecast = false;
+                else
+                    ShowForecast = true;
+                selectedPosition = value;
+            }
+            get => selectedPosition;
+        }
+
         public MainViewModel()
         {
             networkManager = new NetworkManager();
-            //CurrentWeather = new CurrentWeather();
+            ViewModels = new List<IViewModel>()
+            {
+                this,
+                new WeekViewModel()
+            };
+            SelectedPosition = ViewModels[0];
 
             Task.Run(() =>
             {

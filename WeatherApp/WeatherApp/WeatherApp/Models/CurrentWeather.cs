@@ -34,6 +34,8 @@ namespace WeatherApp.Models
 
                 if (!(icon_name.Contains("d") || icon_name == "01n" || icon_name == "02n"))
                     icon_name = icon_name.Replace('n', 'd');
+                if (icon_name == "04d")
+                    icon_name = "03d";
                 return $"icon{icon_name}.png";
             }
 

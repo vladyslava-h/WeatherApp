@@ -20,8 +20,7 @@
             <RowDefinition Height="50*"/>
             <RowDefinition Height="25*"/>
         </Grid.RowDefinitions>
-
-        <ff:CachedImage Aspect="AspectFill"  Grid.RowSpan="3" Source="{Binding Path=CurrentWeather.ImageSource}" Margin="0"/>
+        <ff:CachedImage Aspect="AspectFill"  Grid.RowSpan="3" Source="{Binding Path=BackgroundSource}" Margin="0"/>
         <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.6"/>
 
         <ContentView Grid.RowSpan="3" Margin="0,0,0,10">
@@ -37,6 +36,8 @@
                                 <RowDefinition Height="50*"/>
                                 <RowDefinition Height="25*"/>
                             </Grid.RowDefinitions>
+
+                            <!-- t o d a y -->
                             <ContentView Grid.Row="0"  Margin="0, 45, 25, 0" IsVisible="{Binding Path=IsDayPage}">
                                 <StackLayout>
                                     <Label HorizontalTextAlignment="End" Text="Last update: Fri Nov 17, 11:26 am" TextColor="White" FontSize="Micro"/>
@@ -61,6 +62,45 @@
                                     <Label Text="{Binding Path=CurrentWeather.Description}" Margin="25,5,0,0" TextColor="White" FontSize="Large"/>
                                 </StackLayout>
                             </ContentView>
+
+                            <!-- w e e k -->
+                            <ContentView Grid.RowSpan="3" IsVisible="{Binding Path=IsWeekPage}"
+                                         Padding="25" >
+                                <ListView ItemsSource="{Binding Path=WeekdaysWeather}" 
+                                          SeparatorVisibility="None"
+                                          VerticalOptions="Center"
+                                          Margin="0, 25, 0, 0"
+                                          SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="40*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Column="0" Text="{Binding Path=WeekdayName}" TextColor="White"
+                                                           HorizontalOptions="Start" VerticalOptions="Center" FontSize="Medium"/>
+                                                    <Image Grid.Column="1" Source="{Binding Path=Icon}"
+                                                           WidthRequest="20" HeightRequest="20" 
+                                                           VerticalOptions="Center"/>
+                                                    <StackLayout Orientation="Horizontal" HorizontalOptions="End" Grid.Column="2" VerticalOptions="Center">
+                                                        <Label Text="{Binding Path=MaxTemp}" TextColor="White" FontSize="Medium"/>
+                                                        <Label Text="°" Margin ="0, 0, 5, 0" TextColor="White" FontSize="Medium"/>
+                                                    </StackLayout>
+                                                    <StackLayout Orientation="Horizontal" HorizontalOptions="End" Grid.Column="3" VerticalOptions="Center">
+                                                        <Label Text="{Binding Path=MinTemp}" TextColor="Gray" FontSize="Medium"/>
+                                                        <Label Text="°" Margin ="0, 0, 5, 0" TextColor="Gray" FontSize="Medium"/>
+                                                    </StackLayout>
+                                                </Grid>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ContentView>
+
                         </Grid>
                     </DataTemplate>
                 </controls:CarouselViewControl.ItemTemplate>
@@ -69,7 +109,7 @@
 
 
         <!--F O R E C A S T-->
-        <StackLayout VerticalOptions="Center" Margin="0,-25,0,-5" Grid.Row="2" IsVisible="{Binding Path=ShowForecast}">
+        <StackLayout VerticalOptions="Center" Margin="0,-25,0,-5" Grid.Row="2">
             <RelativeLayout HeightRequest="110">
                 <ListView
                       Rotation ="270"

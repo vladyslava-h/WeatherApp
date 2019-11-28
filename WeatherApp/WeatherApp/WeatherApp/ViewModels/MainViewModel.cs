@@ -1,26 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Infrastructure;
 using WeatherApp.Models;
+using Xamarin.Forms;
 
 namespace WeatherApp.ViewModels
 {
-    class MainViewModel : Notifier, IViewModel
+    class MainViewModel : Notifier
     {
         private NetworkManager networkManager;
-
-        private CurrentWeather currentWeather;
-        public CurrentWeather CurrentWeather
-        {
-            set
-            {
-                currentWeather = value;
-                Notify();
-            }
-            get => currentWeather;
-        }
 
         List<CurrentWeather> forecast;
         public List<CurrentWeather> Forecast
@@ -33,49 +24,35 @@ namespace WeatherApp.ViewModels
             get => forecast;
         }
 
-        public List<IViewModel> ViewModels { set; get; }
-        public bool IsDayPage => true;
-        public bool IsWeekPage => false;
+        public ObservableCollection<IViewModel> ViewModels { set; get; }
 
-        private bool showForecast;
-        public bool ShowForecast
+        private string backgroundSource;
+        public string BackgroundSource
         {
             set
             {
-                showForecast = value;
+                backgroundSource = value;
                 Notify();
             }
-            get => showForecast;
-        } 
-
-        private IViewModel selectedPosition;
-        public IViewModel SelectedPosition
-        { 
-            set
-            {
-                if (value != this)
-                    ShowForecast = false;
-                else
-                    ShowForecast = true;
-                selectedPosition = value;
-            }
-            get => selectedPosition;
+            get => backgroundSource;
         }
 
         public MainViewModel()
         {
             networkManager = new NetworkManager();
-            ViewModels = new List<IViewModel>()
-            {
-                this,
-                new WeekViewModel()
-            };
-            SelectedPosition = ViewModels[0];
+            ViewModels = new ObservableCollection<IViewModel>() { new DayViewModel(), new WeekViewModel() };
 
             Task.Run(() =>
             {
-                CurrentWeather = networkManager.GetCurrentWeather("Kyiv");
+                CurrentWeather currentWeather = networkManager.GetCurrentWeather("Kyiv");
+                BackgroundSource = currentWeather.ImageSource;
                 Forecast = networkManager.GetForecast("Kiev").List;
+
+                Device.BeginInvokeOnMainThread(new Action(() =>
+                {
+                    ViewModels[0].Init(currentWeather);
+                    ViewModels[1].Init(Forecast);
+                }));
             });
         }
 

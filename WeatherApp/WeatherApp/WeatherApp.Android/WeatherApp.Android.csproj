@@ -150,9 +150,6 @@
     <AndroidResource Include="Resources\drawable\icon03d.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon04d.png" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon50d.png" />
   </ItemGroup>
   <ItemGroup>

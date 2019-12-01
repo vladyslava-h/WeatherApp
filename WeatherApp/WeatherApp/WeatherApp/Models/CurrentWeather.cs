@@ -7,9 +7,9 @@ using System.Text;
 
 namespace WeatherApp.Models
 {
-    class CurrentWeather
+    public class CurrentWeather
     {
-        public string Name { set; get; }
+        public City City { set; get; }
         public List<WeatherInfo> Weather { set; get; }
         public TemperatureInfo Main { set; get; }
 

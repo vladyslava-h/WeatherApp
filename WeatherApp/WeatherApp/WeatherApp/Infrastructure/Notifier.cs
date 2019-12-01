@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WeatherApp.Infrastructure
 {
-    class Notifier : INotifyPropertyChanged
+    public class Notifier : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         protected void Notify([CallerMemberName]string propertyName = "")

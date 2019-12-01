@@ -1,60 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Infrastructure;
 using WeatherApp.Models;
+using WeatherApp.Views;
 using Xamarin.Forms;
 
 namespace WeatherApp.ViewModels
 {
-    class MainViewModel : Notifier
+    class MainViewModel : Notifier, IMainViewModel
     {
-        private NetworkManager networkManager;
+        private ObservableCollection<MasterPageItem> menuItems;
+        public ObservableCollection<MasterPageItem> MenuItems
+        {
+            set => menuItems = value;
+            get => menuItems ?? (menuItems = new ObservableCollection<MasterPageItem>());
+        }
 
-        List<CurrentWeather> forecast;
-        public List<CurrentWeather> Forecast
+        private MasterPageItem selectedItem;
+        public MasterPageItem SelectedItem
         {
             set
             {
-                forecast = value;
-                Notify();
-            }
-            get => forecast;
-        }
-
-        public ObservableCollection<IViewModel> ViewModels { set; get; }
-
-        private string backgroundSource;
-        public string BackgroundSource
-        {
-            set
-            {
-                backgroundSource = value;
-                Notify();
-            }
-            get => backgroundSource;
-        }
-
-        public MainViewModel()
-        {
-            networkManager = new NetworkManager();
-            ViewModels = new ObservableCollection<IViewModel>() { new DayViewModel(), new WeekViewModel() };
-
-            Task.Run(() =>
-            {
-                CurrentWeather currentWeather = networkManager.GetCurrentWeather("Kyiv");
-                BackgroundSource = currentWeather.ImageSource;
-                Forecast = networkManager.GetForecast("Kiev").List;
-
-                Device.BeginInvokeOnMainThread(new Action(() =>
+                foreach (var item in MenuItems)
                 {
-                    ViewModels[0].Init(currentWeather);
-                    ViewModels[1].Init(Forecast);
-                }));
-            });
+                    if (item.Title == value.Title)
+                        item.TextColor = Color.Black;
+                    else
+                        item.TextColor = Color.White;
+                }
+                selectedItem = value;
+                Notify();
+            }
+            get => selectedItem;
         }
 
+        public List<City> Cities { set; get; }
+        private MainView mainView;
+        public MainViewModel(MainView mainView)
+        {
+            this.mainView = mainView;
+            City city = new City() { Name = "Kyiv", Country = "UA", Id = 703448 };
+            MenuItems.Add(new MasterPageItem() { Title = "Kiev", View = new WeatherView(city), TextColor = Color.White });
+
+            LoadCities();
+        }
+
+        public async void LoadCities()
+        {
+            NetworkManager networkManager = new NetworkManager();
+            Cities = await networkManager.GetCities();
+
+            City city = await FindCity(4158224);
+            MenuItems.Add(new MasterPageItem() { Title = city.Name, View = new WeatherView(city), TextColor = Color.White });
+            mainView.RefreshListView();
+        }
+
+        public Task<City> FindCity(int id)
+        {
+            return Task.Factory.StartNew(() => Cities.Where(x => x.Id == id).First());
+        }
     }
 }

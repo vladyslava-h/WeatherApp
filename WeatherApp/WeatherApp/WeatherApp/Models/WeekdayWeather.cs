@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WeatherApp.Models
 {
-    class WeekdayWeather
+    public class WeekdayWeather
     {
         public string WeekdayName { set; get; } 
         public string Icon { set; get; }

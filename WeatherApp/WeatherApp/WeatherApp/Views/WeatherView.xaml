@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"  
+             xmlns:controls="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
+             xmlns:infrastructure="clr-namespace:WeatherApp.Infrastructure"
+             mc:Ignorable="d"
+             x:Class="WeatherApp.Views.WeatherView"
+             xmlns:vm ="clr-namespace:WeatherApp.ViewModels">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="25*"/>
+        </Grid.RowDefinitions>
+        <ff:CachedImage Aspect="AspectFill"  Grid.RowSpan="3" Source="{Binding Path=BackgroundSource}" Margin="0"/>
+        <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.6"/>
+
+        <ContentView Grid.RowSpan="3" Margin="0,0,0,10">
+            <controls:CarouselViewControl
+                Position="{Binding SelectedPosition}"
+                ItemsSource="{Binding ViewModels}"
+                ShowIndicators="True">
+                <controls:CarouselViewControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0, 0, 0, 10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25*"/>
+                                <RowDefinition Height="50*"/>
+                                <RowDefinition Height="25*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- t o d a y -->
+                            
+                            <ContentView Grid.Row="1" IsVisible="{Binding Path=IsDayPage}">
+                                <StackLayout>
+                                    <Grid VerticalOptions="EndAndExpand">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="65*"></ColumnDefinition>
+                                            <ColumnDefinition Width="35*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+
+                                        <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" Margin="0">
+                                            <Label Text="{Binding Path=CurrentWeather.Main.TempInt}" 
+                                           Margin="25,0,0,0"
+                                           TextColor="White" 
+                                           FontSize="Header"/>
+                                            <Label Text="°C" Margin="5,70,0,0" TextColor="White" FontSize="Large"/>
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Column="1" HorizontalOptions="End" Margin="0, 0, 25, 25" VerticalOptions="EndAndExpand">
+                                            <StackLayout Orientation="Horizontal" Margin="0, 0, 0, 10">
+                                                <Label Text="↑" TextColor="White" FontSize="Subtitle"/>
+                                                <Label Text="{Binding Path=CurrentWeather.Main.Temp_maxInt}" 
+                                                        TextColor="White" 
+                                                        FontSize="Subtitle"/>
+                                                <Label Text="°C" TextColor="White" FontSize="Subtitle"/>
+                                            </StackLayout>
+                                            <StackLayout Orientation="Horizontal" Margin="0, 15, 0, 0">
+                                                <Label Text="↓" TextColor="White" FontSize="Subtitle"/>
+                                                <Label Text="{Binding Path=CurrentWeather.Main.Temp_minInt}" 
+                                                        TextColor="White" 
+                                                        FontSize="Subtitle"/>
+                                                <Label Text="°C" TextColor="White" FontSize="Subtitle"/>
+                                            </StackLayout>
+                                        </StackLayout>
+
+                                    </Grid>
+                                    <BoxView 
+                                            HeightRequest="4"
+                                            Margin="25, -7, 25, 0"
+                                            BackgroundColor="White" 
+                                            HorizontalOptions="FillAndExpand" />
+                                    <Label Text="{Binding Path=CurrentWeather.Description}" Margin="25,5,0,10" TextColor="White" FontSize="Large"/>
+                                </StackLayout>
+                            </ContentView>
+
+                            <!-- w e e k -->
+                            <ContentView Grid.RowSpan="3" IsVisible="{Binding Path=IsWeekPage}"
+                                         Padding="25">
+                                <ListView ItemsSource="{Binding Path=WeekdaysWeather}" 
+                                          SeparatorVisibility="None"
+                                          VerticalOptions="Center"
+                                          Margin="0, 5, 0, 10"
+                                          SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="45*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="25*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="15*"></ColumnDefinition>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Column="0" Text="{Binding Path=WeekdayName}" TextColor="White"
+                                                           HorizontalOptions="Start" VerticalOptions="Center" FontSize="Medium"/>
+                                                    <Image Grid.Column="1" Source="{Binding Path=Icon}"
+                                                           WidthRequest="20" HeightRequest="20" 
+                                                           VerticalOptions="Center"/>
+                                                    <StackLayout Orientation="Horizontal" HorizontalOptions="End" Grid.Column="2" VerticalOptions="Center">
+                                                        <Label Text="{Binding Path=MaxTemp}" TextColor="White" FontSize="Medium"/>
+                                                        <Label Text="°" Margin ="0, 0, 5, 0" TextColor="White" FontSize="Medium"/>
+                                                    </StackLayout>
+                                                    <StackLayout Orientation="Horizontal" HorizontalOptions="End" Grid.Column="3" VerticalOptions="Center">
+                                                        <Label Text="{Binding Path=MinTemp}" TextColor="Gray" FontSize="Medium"/>
+                                                        <Label Text="°" Margin ="0, 0, 5, 0" TextColor="Gray" FontSize="Medium"/>
+                                                    </StackLayout>
+                                                </Grid>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ContentView>
+
+                        </Grid>
+                    </DataTemplate>
+                </controls:CarouselViewControl.ItemTemplate>
+            </controls:CarouselViewControl>
+        </ContentView>
+
+
+        <!--F O R E C A S T-->
+        <StackLayout VerticalOptions="Center" Margin="0,-25,0,-5" Grid.Row="2">
+            <RelativeLayout HeightRequest="110">
+                <ListView
+                      Rotation ="270"
+                      RowHeight ="100"
+                      SeparatorColor="Transparent"
+                      SeparatorVisibility="None"
+                      VerticalOptions                 ="FillAndExpand"
+                      CachingStrategy                 ="RecycleElement"
+                      HorizontalOptions               ="FillAndExpand"
+                      RelativeLayout.XConstraint      ="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0.5,Constant=-45}"
+                      RelativeLayout.YConstraint      ="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=-0.5,Constant=45}"
+                      RelativeLayout.WidthConstraint  ="{ConstraintExpression Type=Constant,Constant=90}"
+                      RelativeLayout.HeightConstraint ="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"
+                      ItemsSource="{Binding Forecast}"
+                      VerticalScrollBarVisibility="Never"
+                      SelectionMode="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ContentView Rotation ="90"
+                                         BackgroundColor ="Transparent"
+                                         Padding ="5">
+                                    <StackLayout>
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Start">
+                                            <Label Text="{Binding Path=Main.TempInt}" TextColor="White" FontAttributes="Bold"/>
+                                            <Label Text="°C" TextColor="White" FontAttributes="Bold"/>
+                                        </StackLayout>
+                                        <Image Source="{Binding Path=IconPng}"
+                                               Margin="0, 6, 0, 6"
+                                               WidthRequest="20" HeightRequest="20" 
+                                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Path=Time}" TextColor="White" HorizontalOptions="Center" VerticalOptions="End"/>
+                                    </StackLayout>
+                                </ContentView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.Effects>
+                        <infrastructure:NoScroll/>
+                    </ListView.Effects>
+                </ListView>
+            </RelativeLayout>
+        </StackLayout>
+
+    </Grid>
+
+</ContentPage>

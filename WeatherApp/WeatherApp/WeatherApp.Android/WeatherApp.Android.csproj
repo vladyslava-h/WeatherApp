@@ -96,9 +96,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\tmp_overlay.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\i09n.gif" />
   </ItemGroup>
   <ItemGroup>

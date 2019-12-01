@@ -1,21 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WeatherApp.Infrastructure;
+using WeatherApp.Models;
+using WeatherApp.ViewModels;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
-namespace WeatherApp
+namespace WeatherApp.Views
 {
-    // Learn more about making custom code visible in the Xamarin.Forms previewer
-    // by visiting https://aka.ms/xamarinforms-previewer
-    [DesignTimeVisible(false)]
-    public partial class MainPage : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class MainView : MasterDetailPage
     {
-        public MainPage()
+        IMainViewModel mainViewModel;
+        public MainView()
         {
             InitializeComponent();
+            mainViewModel = new MainViewModel(this);
+            this.BindingContext = mainViewModel;
+            Detail = new NavigationPage(mainViewModel.MenuItems[0].View);
+            listView.ItemsSource = mainViewModel.MenuItems;
+            listView.SelectedItem = mainViewModel.MenuItems[0];
+        }
+
+        private async void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            IsPresented = false;
+            await Task.Run(() =>
+            {
+                var item = (MasterPageItem)e.SelectedItem;
+                mainViewModel.SelectedItem = item;
+                WeatherView page = item.View;
+
+                Task.Delay(300).Wait();
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Detail = new NavigationPage(page);
+                });
+            });
+        }
+
+        public void RefreshListView()
+        {
+            listView.ItemsSource = mainViewModel.MenuItems;
+            listView.SelectedItem = mainViewModel.SelectedItem;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WeatherApp.Models
 {
-    class TemperatureInfo
+    public class TemperatureInfo
     {
         public float Temp { set; get; }
         public float Temp_min { set; get; }

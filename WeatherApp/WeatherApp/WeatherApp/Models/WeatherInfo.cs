@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WeatherApp.Models
 {
-    class WeatherInfo
+    public class WeatherInfo
     {
         public string Main { set; get; }
         public string Description { set; get; }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WeatherApp.Models
 {
-    class Forecast
+    public class Forecast
     {
         public List<CurrentWeather> List { set; get; }
     }

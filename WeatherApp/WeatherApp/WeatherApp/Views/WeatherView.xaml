@@ -92,8 +92,7 @@
                                          Padding="25">
                                 <ListView ItemsSource="{Binding Path=WeekdaysWeather}" 
                                           SeparatorVisibility="None"
-                                          VerticalOptions="Center"
-                                          Margin="0, 5, 0, 10"
+                                          Margin="0, 0, 0, 10"
                                           SelectionMode="None">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WeatherApp.Infrastructure;
 using WeatherApp.Models;
 using WeatherApp.Views;
@@ -44,10 +45,69 @@ namespace WeatherApp.ViewModels
 
         public List<City> Cities { set; get; }
 
+        public ICommand PerformSearch => new Command<string>((string query) =>
+        {
+            SearchResults = Cities.Where(x => x.Name.StartsWith(query)).ToList();
+            ShowMenuList = false;
+            ShowResultsList = true;
+        });
+
+        private City selectedCity;
+        public City SelectedCity
+        {
+            set
+            {
+                selectedCity = value;
+                if (value != null && value.Name != string.Empty)
+                {
+                    MenuItems.Add(new MasterPageItem() { Title = SelectedCity.Name, View = new WeatherView(SelectedCity), TextColor = Color.White });
+                    ShowMenuList = true;
+                    ShowResultsList = false;
+                }
+                Notify();
+            }
+            get => selectedCity;
+        }
+
+        private bool showResultsList;
+        public bool ShowResultsList
+        {
+            set
+            {
+                showResultsList = value;
+                Notify();
+            }
+            get => showResultsList;
+        }
+
+        private bool showMenuList;
+        public bool ShowMenuList
+        {
+            set
+            {
+                showMenuList = value;
+                Notify();
+            }
+            get => showMenuList;
+        }
+
+        private List<City> searchResults;
+        public List<City> SearchResults
+        {
+            set
+            {
+                searchResults = value;
+                Notify();
+            }
+            get => searchResults;
+        }
+
         public MainViewModel(IIOService<List<City>> service)
         {
             iOService = service;
 
+            ShowMenuList = true;
+            SelectedCity = new City() { Name = string.Empty };
             LoadCities();
             LoadMenuItems();
         }
@@ -86,5 +146,6 @@ namespace WeatherApp.ViewModels
             }
 
         }
+
     }
 }

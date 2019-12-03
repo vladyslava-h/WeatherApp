@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Infrastructure;
+using WeatherApp.IoC;
 using WeatherApp.Models;
 using WeatherApp.ViewModels;
 using Xamarin.Forms;
@@ -19,10 +20,9 @@ namespace WeatherApp.Views
         public MainView()
         {
             InitializeComponent();
-            mainViewModel = new MainViewModel(this);
+            mainViewModel = new MainViewModel(ServiceLocator.Get<IIOService<List<City>>>());
             this.BindingContext = mainViewModel;
             Detail = new NavigationPage(mainViewModel.MenuItems[0].View);
-            listView.ItemsSource = mainViewModel.MenuItems;
             listView.SelectedItem = mainViewModel.MenuItems[0];
         }
 
@@ -43,10 +43,5 @@ namespace WeatherApp.Views
             });
         }
 
-        public void RefreshListView()
-        {
-            listView.ItemsSource = mainViewModel.MenuItems;
-            listView.SelectedItem = mainViewModel.SelectedItem;
-        }
     }
 }

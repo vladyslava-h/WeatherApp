@@ -1,4 +1,5 @@
 ﻿using System;
+using WeatherApp.IoC;
 using WeatherApp.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -11,6 +12,7 @@ namespace WeatherApp
         {
             InitializeComponent();
 
+            ServiceLocator.Setup();
             MainPage = new MainView();
         }
 

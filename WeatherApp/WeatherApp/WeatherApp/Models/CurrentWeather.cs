@@ -13,18 +13,8 @@ namespace WeatherApp.Models
         public List<WeatherInfo> Weather { set; get; }
         public TemperatureInfo Main { set; get; }
 
+        [JsonIgnore]
         public string Description => Weather[0].Description;
-        public string ImageSource
-        {
-            get
-            {
-                if (Weather[0].Icon == "10n")
-                    return "i09n.gif";
-                if (Weather[0].Icon == "04n")
-                    return "i04d.gif";
-                return $"i{Weather[0].Icon}.gif";
-            }
-        }
 
         public string IconPng
         {
@@ -42,6 +32,7 @@ namespace WeatherApp.Models
         }
 
         public string Dt_txt { set; get; }
+        [JsonIgnore]
         public string Time
         {
             get

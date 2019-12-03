@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ffimage="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"  
              xmlns:controls="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
              xmlns:infrastructure="clr-namespace:WeatherApp.Infrastructure"
              mc:Ignorable="d"
+             BackgroundColor="Black"
              x:Class="WeatherApp.Views.WeatherView"
              xmlns:vm ="clr-namespace:WeatherApp.ViewModels">
 
@@ -17,8 +17,15 @@
             <RowDefinition Height="50*"/>
             <RowDefinition Height="25*"/>
         </Grid.RowDefinitions>
-        <ff:CachedImage Aspect="AspectFill"  Grid.RowSpan="3" Source="{Binding Path=BackgroundSource}" Margin="0"/>
-        <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.6"/>
+        <ff:CachedImage 
+                Source="{Binding Path=BackgroundSource}"
+                LoadingPlaceholder= "black.png"
+                CacheDuration= "50"
+                RetryCount= "3"
+                RetryDelay= "500"
+                Aspect="AspectFill"  Grid.RowSpan="3"
+          />
+        <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.7"/>
 
         <ContentView Grid.RowSpan="3" Margin="0,0,0,10">
             <controls:CarouselViewControl
@@ -35,7 +42,7 @@
                             </Grid.RowDefinitions>
 
                             <!-- t o d a y -->
-                            
+
                             <ContentView Grid.Row="1" IsVisible="{Binding Path=IsDayPage}">
                                 <StackLayout>
                                     <Grid VerticalOptions="EndAndExpand">

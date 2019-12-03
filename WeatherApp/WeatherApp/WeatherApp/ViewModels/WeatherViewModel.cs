@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WeatherApp.Infrastructure;
 using WeatherApp.Models;
+using WeatherApp.Infrastructure;
 using Xamarin.Forms;
 
 namespace WeatherApp.ViewModels
@@ -32,7 +32,7 @@ namespace WeatherApp.ViewModels
         {
             set
             {
-                backgroundSource = value;
+                backgroundSource = "https://res.cloudinary.com/dd6b2ufgk/image/upload/v1575292901/weather/"+ value+".jpg";
                 Notify();
             }
             get => backgroundSource;
@@ -48,7 +48,7 @@ namespace WeatherApp.ViewModels
                 CurrentWeather currentWeather = networkManager.GetCurrentWeather(city.Id);
                 currentWeather.City = city;
                 Forecast = networkManager.GetForecast(city.Id).List;
-                BackgroundSource = currentWeather.ImageSource;
+                BackgroundSource = currentWeather.Weather[0].Icon;
 
                 Device.BeginInvokeOnMainThread(new Action(() =>
                 {

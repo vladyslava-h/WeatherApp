@@ -17,14 +17,18 @@ namespace WeatherApp.Models
             string responseJson = string.Empty;
             List<City> users_cities = new List<City>();
 
-            if (File.Exists(filepath))
+            try
             {
-                using (StreamReader file = File.OpenText(filepath))
+                if (File.Exists(filepath))
                 {
-                    JsonSerializer serializer = new JsonSerializer();
-                    users_cities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                    using (StreamReader file = File.OpenText(filepath))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        users_cities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                    }
                 }
             }
+            catch { }
 
             return users_cities;
         }

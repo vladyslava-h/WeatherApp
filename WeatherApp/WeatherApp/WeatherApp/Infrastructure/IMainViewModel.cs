@@ -10,5 +10,7 @@ namespace WeatherApp.Infrastructure
     {
         ObservableCollection<MasterPageItem> MenuItems { set; get; }
         MasterPageItem SelectedItem { set; get; }
+        City SelectedCityToRemove { set; get; }
+        void SaveCities();
     }
 }

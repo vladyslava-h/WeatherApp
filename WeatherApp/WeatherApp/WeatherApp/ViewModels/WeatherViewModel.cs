@@ -32,7 +32,7 @@ namespace WeatherApp.ViewModels
         {
             set
             {
-                backgroundSource = "https://res.cloudinary.com/dd6b2ufgk/image/upload/v1575292901/weather/"+ value+".jpg";
+                backgroundSource = "https://res.cloudinary.com/dd6b2ufgk/image/upload/weather/"+value+".jpg";
                 Notify();
             }
             get => backgroundSource;

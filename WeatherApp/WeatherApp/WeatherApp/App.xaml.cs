@@ -1,4 +1,5 @@
 ﻿using System;
+using WeatherApp.Infrastructure;
 using WeatherApp.IoC;
 using WeatherApp.Views;
 using Xamarin.Forms;
@@ -23,7 +24,7 @@ namespace WeatherApp
 
         protected override void OnSleep()
         {
-            // Handle when your app sleeps
+            ((IMainViewModel)MainPage.BindingContext).SaveCities();
         }
 
         protected override void OnResume()

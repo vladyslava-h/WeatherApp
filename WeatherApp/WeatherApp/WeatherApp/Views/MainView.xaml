@@ -29,6 +29,7 @@
                     <SearchBar x:Name="searchBar"
                            Margin="-35,0,15,0"
                            Placeholder="+ Find a City..."
+                           IsEnabled="{Binding SearchBarIsEnabled}"
                            BackgroundColor="Black"
                            HorizontalOptions="Start"
                            PlaceholderColor="DarkGray"
@@ -46,39 +47,58 @@
 
                 <ListView IsVisible="{Binding ShowResultsList}"
                         Grid.Row="2"
+                          x:Name="listResults"
                         Margin="0,40,0,0"
                         RowHeight="60"
                         ItemsSource="{Binding SearchResults}"
                         VerticalOptions="FillAndExpand"
                         SeparatorVisibility="None"
+                        IsRefreshing="{Binding IsListCityRefresh}"
                         SelectedItem="{Binding SelectedCity}"
                         BackgroundColor="Transparent">
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <StackLayout VerticalOptions="Center"
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80*"></ColumnDefinition>
+                                        <ColumnDefinition Width="20*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout VerticalOptions="Center"
                                              Orientation="Horizontal"
-                                             HorizontalOptions="Center">
-                                    <Label Text="{Binding Name}"
+                                             Margin="25,0,0,0"
+                                             HorizontalOptions="Start">
+                                        <Label Text="{Binding Name}"
                                            FontSize="Medium"
                                            FontAttributes="Bold"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            TextColor="White"/>
-                                    <Label Text=", "
+                                        <Label Text=", "
                                            FontSize="Medium"
                                            FontAttributes="Bold"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            TextColor="White"/>
-                                    <Label Text="{Binding Country}"
+                                        <Label Text="{Binding Country}"
                                            FontSize="Medium"
                                            FontAttributes="Bold"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            TextColor="White"/>
-                                </StackLayout>
+                                    </StackLayout>
+                                    <Button Grid.Column="1"
+                                              HorizontalOptions="Center"
+                                              VerticalOptions="Center"
+                                              BackgroundColor="Transparent"
+                                              TextColor="DarkRed"
+                                              BorderColor="Transparent"
+                                              FontSize="Medium"
+                                              IsVisible="{Binding ShowRemoveButton}"
+                                              Command="{Binding RemoveCityCommand}"
+                                              Text="✘"/>
+                                </Grid>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>

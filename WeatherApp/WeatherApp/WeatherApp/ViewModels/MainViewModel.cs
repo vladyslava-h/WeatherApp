@@ -40,16 +40,59 @@ namespace WeatherApp.ViewModels
                 selectedItem = value;
                 Notify();
             }
-            get => selectedItem;
+            get => selectedItem ?? (selectedItem = MenuItems[0]);
         }
 
         public List<City> Cities { set; get; }
 
+        private bool isListCityRefresh;
+        public bool IsListCityRefresh
+        {
+            set
+            {
+                isListCityRefresh = value;
+                Notify();
+            }
+            get => isListCityRefresh;
+        }
+
         public ICommand PerformSearch => new Command<string>((string query) =>
         {
-            SearchResults = Cities.Where(x => x.Name.StartsWith(query)).ToList();
-            ShowMenuList = false;
-            ShowResultsList = true;
+            Task.Run(() =>
+            {
+                bool success = false;
+                IsListCityRefresh = true;
+                SearchBarIsEnabled = ShowMenuList = false;
+                ShowResultsList = true;
+                while (success != true)
+                {
+                    try
+                    {
+                        SearchResults = Cities.Where(x => x.Name.StartsWith(query)).ToList();
+                        IsListCityRefresh = false;
+                        List<int> existed_cities = new List<int>();
+                        foreach (var item in MenuItems)
+                            existed_cities.Add(((WeatherViewModel)item.View.BindingContext).ViewModels[0].CurrentWeather.City.Id);
+
+                        foreach (var res in searchResults)
+                        {
+                            if (existed_cities.Contains(res.Id))
+                            {
+                                res.ShowRemoveButton = true;
+                                res.MainViewModel = this;
+                            }
+                            else res.ShowRemoveButton = false;
+
+                        }
+
+                        SearchBarIsEnabled = true;
+                        success = true;
+                    }
+                    catch { }
+                }
+
+            });
+
         });
 
         private City selectedCity;
@@ -58,15 +101,52 @@ namespace WeatherApp.ViewModels
             set
             {
                 selectedCity = value;
-                if (value != null && value.Name != string.Empty)
+                List<int> tmp_cities = new List<int>();
+                try
                 {
-                    MenuItems.Add(new MasterPageItem() { Title = SelectedCity.Name, View = new WeatherView(SelectedCity), TextColor = Color.White });
+                    if (MenuItems != null && MenuItems.Count != 0)
+                    {
+                        foreach (var item in MenuItems)
+                            tmp_cities.Add(((WeatherViewModel)item.View.BindingContext).ViewModels[0].CurrentWeather.City.Id);
+                        if (!tmp_cities.Contains(SelectedCity.Id))
+                        {
+                            if (value != null && value.Name != string.Empty)
+                            {
+                                SelectedCity.MainViewModel = this;
+                                MenuItems.Add(new MasterPageItem() { Title = SelectedCity.Name, View = new WeatherView(SelectedCity), TextColor = Color.White });
+                                ShowMenuList = true;
+                                ShowResultsList = false;
+                            }
+                        }
+                    }
                     ShowMenuList = true;
                     ShowResultsList = false;
+                    Notify();
                 }
+                catch { }
+            }
+            get => selectedCity ?? (SelectedCity = new City(this) { Name = string.Empty, Country = string.Empty, Id = 0 });
+        }
+
+
+        private City selectedCityToRemove;
+        public City SelectedCityToRemove
+        {
+            set
+            {
+                selectedCityToRemove = value;
+                if (value != null && value.Name != string.Empty && value.Id != ((WeatherViewModel)SelectedItem.View.BindingContext).ViewModels[0].CurrentWeather.City.Id)
+                {
+                    ShowMenuList = true;
+                    ShowResultsList = false;
+
+                    MenuItems.Remove(MenuItems.Where(x => ((WeatherViewModel)x.View.BindingContext)
+                    .ViewModels[0].CurrentWeather.City.Id == selectedCityToRemove.Id).FirstOrDefault());
+                }
+
                 Notify();
             }
-            get => selectedCity;
+            get => selectedCityToRemove ?? (SelectedCityToRemove = new City(this) { Name = string.Empty, Id = 0, Country = string.Empty });
         }
 
         private bool showResultsList;
@@ -99,15 +179,25 @@ namespace WeatherApp.ViewModels
                 searchResults = value;
                 Notify();
             }
-            get => searchResults;
+            get => searchResults ?? (searchResults = new List<City>());
+        }
+
+        private bool searchBarIsEnabled;
+        public bool SearchBarIsEnabled
+        {
+            set
+            {
+                searchBarIsEnabled = value;
+                Notify();
+            }
+            get => searchBarIsEnabled;
         }
 
         public MainViewModel(IIOService<List<City>> service)
         {
             iOService = service;
 
-            ShowMenuList = true;
-            SelectedCity = new City() { Name = string.Empty };
+            SearchBarIsEnabled = ShowMenuList = true;
             LoadCities();
             LoadMenuItems();
         }
@@ -125,24 +215,32 @@ namespace WeatherApp.ViewModels
 
         public void SaveCities()
         {
-            List<City> cities = new List<City>();
+            List<City> tmp_cities = new List<City>();
             foreach (var item in MenuItems)
-                cities.Add(((WeatherViewModel)item.View.BindingContext).ViewModels[0].CurrentWeather.City);
-            iOService.Save(cities);
+                tmp_cities.Add(((WeatherViewModel)item.View.BindingContext).ViewModels[0].CurrentWeather.City);
+            iOService.Save(tmp_cities);
         }
 
         public void LoadMenuItems()
         {
             List<City> users_cities = iOService.Load();
-            if (users_cities == null)
+            if (users_cities == null || users_cities.Count == 0)
             {
-                City city = new City() { Name = "Kyiv", Country = "UA", Id = 703448 };
+                City city = new City(this) { Name = "Kyiv", Country = "UA", Id = 703448 };
                 MenuItems.Add(new MasterPageItem() { Title = "Kiev", View = new WeatherView(city), TextColor = Color.White });
             }
             else
             {
                 foreach (var city in users_cities)
-                    MenuItems.Add(new MasterPageItem() { Title = city.Name, View = new WeatherView(city), TextColor = Color.White });
+                {
+                    city.MainViewModel = this;
+                    MenuItems.Add(new MasterPageItem()
+                    {
+                        Title = city.Name,
+                        View = new WeatherView(city),
+                        TextColor = Color.White
+                    });
+                }
             }
 
         }

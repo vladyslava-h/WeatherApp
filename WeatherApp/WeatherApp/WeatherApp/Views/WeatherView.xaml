@@ -23,6 +23,7 @@
                 CacheDuration= "50"
                 RetryCount= "3"
                 RetryDelay= "500"
+                LoadingPriority="Highest"
                 Aspect="AspectFill"  Grid.RowSpan="3"
           />
         <Image Grid.RowSpan="3" Source="black.png" Aspect="Fill" Opacity="0.7"/>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using WeatherApp.Infrastructure;
 using WeatherApp.IoC;
 using WeatherApp.Views;
@@ -14,8 +15,20 @@ namespace WeatherApp
             InitializeComponent();
 
             ServiceLocator.Setup();
-            MainPage = new MainView();
+            MainPage = new LoadingPage();
+            GetView();
         }
+
+        private Task<MainView> InitView()
+        {
+            return Task.Factory.StartNew(() => new MainView());
+        }
+
+        private async void GetView()
+        {
+            MainPage = await InitView();
+        }
+
 
         protected override void OnStart()
         {

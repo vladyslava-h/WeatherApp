@@ -43,7 +43,7 @@ namespace WeatherApp.ViewModels
             networkManager = new NetworkManager();
             ViewModels = new ObservableCollection<IViewModel>() { new DayViewModel(), new WeekViewModel() };
 
-            Task.Run(() =>
+            try
             {
                 CurrentWeather currentWeather = networkManager.GetCurrentWeather(city.Id);
                 currentWeather.City = city;
@@ -55,7 +55,8 @@ namespace WeatherApp.ViewModels
                     ViewModels[0].Init(currentWeather);
                     ViewModels[1].Init(Forecast);
                 }));
-            });
+            }
+            catch { }
 
         }
 

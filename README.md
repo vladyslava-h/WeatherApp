@@ -20,6 +20,17 @@ an Android application using Xamarin.
 - Add Cities to Your Personal List and Remove Them
 
 # Few More Screenshots with Different Weather:
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<img src="WeatherApp/screenshots/1.jpg" align="left" height="500px"/>
-<img src="WeatherApp/screenshots/3.jpg" align="right" height="500px"/>
-<img src="WeatherApp/screenshots/2.jpg" align="center" height="500px"/>
+
+<div align="center">
+   <table align="center" border="0">
+  <tr>
+    <td>
+<img width="350"
+src="WeatherApp/screenshots/1.jpg"/>
+       <td><img width="350"
+src="WeatherApp/screenshots/2.jpg"/>
+    </td>
+     <td> <img width="350"
+src="WeatherApp/screenshots/3.jpg"/></td>
+  </table>
+</div>
